@@ -9,11 +9,13 @@
 
 (defgroup sb-passwd nil "Password management.")
 
-(defcustom sb-passwd-symbols "&~\"#'{([-`_\^@)]=}+$£%*,?;.:/!§"
+(defcustom sb-passwd-symbols "!#$%&‘()*+,-./:;<=>?@[\]^{}~"
   "List of symbols that are allowed in passwords.
 
-By default, some symbols, such as | are removed from this list,
-so as not to interfere with Org-mode table delimiters."
+By default, some symbols are prohibited. For example, the
+vertical bar | interferes with Org-mode table delimiters. Also,
+the double quote causes `org-table-read' to raise the following
+error \"org-babel-read: End of file during parsing\"."
   :type 'string :group 'sb-passwd :tag "Symbols")
 
 (defun sb-passwd-create-password(n &optional use-digits use-letters use-symbols)
