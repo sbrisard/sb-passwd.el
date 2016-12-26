@@ -12,8 +12,8 @@
 (defcustom sb-passwd-symbols "!#$%&‘()*+,-./:;<=>?@[\]^{}~"
   "List of symbols that are allowed in passwords.
 
-By default, some symbols are prohibited. For example, the
-vertical bar | interferes with Org-mode table delimiters. Also,
+By default, some symbols are prohibited.  For example, the
+vertical bar | interferes with Org-mode table delimiters.  Also,
 the double quote causes `org-table-read' to raise the following
 error \"org-babel-read: End of file during parsing\"."
   :type 'string :group 'sb-passwd :tag "Symbols")
@@ -40,7 +40,7 @@ When called interactively, N can be passed as a prefix argument."
                 (y-or-n-p "Use letters? ")
                 (y-or-n-p "Use symbols? ")))
   (let ((signs)
-        (password))
+        (password (make-string n ?x)))
     (progn
       (when use-digits (setq signs "0123456789"))
       (when use-letters (setq signs (concat signs
@@ -48,8 +48,7 @@ When called interactively, N can be passed as a prefix argument."
                                             "ABCDEFGHIJKLMNOPQRSTUVWXYZ")))
       (when use-symbols (setq signs (concat signs sb-passwd-symbols)))
       (unless signs (setq signs "0123456789"))
-      (dotimes (i n (concat password))
-        (setq password (cons (elt signs (random (length signs))) password))))))
+      (dotimes (i n password) (aset password i (aref signs (random (length signs))))))))
 
 (defun sb-passwd-insert-new-password ()
   "Insert new password at point.
