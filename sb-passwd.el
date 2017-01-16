@@ -18,6 +18,14 @@ the double quote causes `org-table-read' to raise the following
 error \"org-babel-read: End of file during parsing\"."
   :type 'string :group 'sb-passwd :tag "Symbols")
 
+(defcustom sb-passwd-passwords ()
+  "Alist of all stored passwords.
+
+The alist maps strings (name of site) to a plist of the form
+
+    (:login login :password password :link link)"
+  :type 'list :group 'sb-passwd :tag "Passwords")
+
 (defun sb-passwd-create-password(n &optional use-digits use-letters use-symbols)
   "Return a new password.
 
@@ -56,6 +64,38 @@ When called interactively, N can be passed as a prefix argument."
 Calls `sb-passwd-create-password' interactively."
   (interactive)
   (insert (call-interactively 'sb-passwd-create-password)))
+
+(defun sb-passwd-append (key login password &rest link)
+  "Append new password to the global list of passwords.
+
+This function modifies `sb-passwd-passwords`. If a mapping for KEY
+already exists, an error is raised."
+  (if (assoc-string key sb-passwd-passwords)
+      (error "Key already exists: %s" key)
+    (setq sb-passwd-passwords
+          ;; TODO this "if" is not very elegant.
+          (cons (if link (list key :login login :password password :link link)
+                  (list key :login login :password password))
+                sb-passwd-passwords))))
+
+(defun sb-passwd-get (key what)
+  "Return the value associated with the password KEY.
+
+WHAT specifies the information that must be returned. It must be one of
+:login, :password or :link.
+
+The function returns nil if KEY is not present, or WHAT is not specified
+for KEY."
+  (plist-get (cdr (assoc-string key sb-passwd-passwords)) what))
+
+(defun sb-passwd-parse-org-link(link)
+  "Parse an org-link and returns a (description link) list."
+  (if (string-match "\\[\\[\\(.*\\)\\]\\[\\(.*\\)\\]\\]" link)
+      (list (match-string 1 link) (match-string 2 link))
+    link))
+
+(defun sb-passwd-append-from-org-table-row (row)
+  (sb-passwd-append (nth 0 row) (nth 1 row) (nth 2 row)))
 
 (provide 'sb-passwd)
 
