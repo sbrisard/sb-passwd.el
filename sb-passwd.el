@@ -73,9 +73,8 @@ already exists, a warning is issued."
   (if (assoc-string key sb-passwd-passwords)
       (display-warning 'sb-passwd (format-message "Key already exists: %s" key))
     (setq sb-passwd-passwords
-          ;; TODO this "if" is not very elegant.
-          (cons (if link (list key :login login :password password :link link)
-                  (list key :login login :password password))
+          (cons (append (list key :login login :password password)
+                        (if link (cons :link link) nil))
                 sb-passwd-passwords))))
 
 (defun sb-passwd-get (key what)
