@@ -71,7 +71,7 @@ Calls `sb-passwd-create-password' interactively."
 This function modifies `sb-passwd-passwords`. If a mapping for KEY
 already exists, an error is raised."
   (if (assoc-string key sb-passwd-passwords)
-      (error "Key already exists: %s" key)
+      (display-warning 'sb-passwd (format-message "Key already exists: %s" key))
     (setq sb-passwd-passwords
           ;; TODO this "if" is not very elegant.
           (cons (if link (list key :login login :password password :link link)
