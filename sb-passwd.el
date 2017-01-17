@@ -69,7 +69,7 @@ Calls `sb-passwd-create-password' interactively."
   "Append new password to the global list of passwords.
 
 This function modifies `sb-passwd-passwords`. If a mapping for KEY
-already exists, an error is raised."
+already exists, a warning is issued."
   (if (assoc-string key sb-passwd-passwords)
       (display-warning 'sb-passwd (format-message "Key already exists: %s" key))
     (setq sb-passwd-passwords
