@@ -68,10 +68,15 @@ Calls `sb-passwd-create-password' interactively."
 (defun sb-passwd-append (key login password &rest link)
   "Append new password to the global list of passwords.
 
-This function modifies `sb-passwd-passwords`. If a mapping for KEY
-already exists, a warning is issued."
+This function modifies `sb-passwd-passwords'.
+
+If a mapping for KEY already exists, a warning is issued
+and the function returns nil. Otherwise, the value of
+`sb-passwd-passwords' is returned."
   (if (assoc-string key sb-passwd-passwords)
-      (display-warning 'sb-passwd (format-message "Key already exists: %s" key))
+      (progn (display-warning 'sb-passwd
+                              (format-message "Key already exists: %s" key))
+             nil)
     (setq sb-passwd-passwords
           (cons (append (list key :login login :password password)
                         (if link (cons :link link) nil))
