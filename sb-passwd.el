@@ -89,7 +89,10 @@ for KEY."
   (plist-get (cdr (assoc-string key sb-passwd-passwords)) what))
 
 (defun sb-passwd-parse-org-link(link)
-  "Parse an org-link and returns a (description link) list."
+  "Parse an org-link and returns a (description . link) cons cell.
+
+If LINK is not an org hyperlink, then it is returned as a one-element
+list."
   (if (string-match "\\[\\[\\(.*\\)\\]\\[\\(.*\\)\\]\\]" link)
       (cons (match-string 2 link) (match-string 1 link))
     (cons link ())))
