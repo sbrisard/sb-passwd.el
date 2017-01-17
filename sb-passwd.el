@@ -91,8 +91,8 @@ for KEY."
 (defun sb-passwd-parse-org-link(link)
   "Parse an org-link and returns a (description link) list."
   (if (string-match "\\[\\[\\(.*\\)\\]\\[\\(.*\\)\\]\\]" link)
-      (list (match-string 1 link) (match-string 2 link))
-    link))
+      (cons (match-string 2 link) (match-string 1 link))
+    (cons link ())))
 
 (defun sb-passwd-append-from-org-table-row (row)
   (sb-passwd-append (nth 0 row) (nth 1 row) (nth 2 row)))
