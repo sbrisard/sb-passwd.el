@@ -122,8 +122,45 @@ list."
       (cons (match-string 2 link) (match-string 1 link))
     (cons link ())))
 
-(defun sb-passwd-append-from-org-table-row (row)
-  (sb-passwd-append (nth 0 row) (nth 1 row) (nth 2 row)))
+(defun sb-passwd-append-from-org-table (table &optional key-index login-index password-index)
+  "Populate `sb-passwd-passwords' with the org-table TABLE.
+
+Each line of the table corresponds to a new password. The optional
+arguments KEY-INDEX, LOGIN-INDEX and PASSWORD-INDEX specify the
+0-based column indices of the key, login and password, respectively.
+
+Default values for these optional arguments are defined by
+
+  - `sb-passwd-org-table-key-index',
+  - `sb-passwd-org-table-login-index',
+  - `sb-passwd-org-table-password-index',
+
+respectively. An example of Org file would read like this
+
+-----begin org file-----
+
+#+NAME: passwords
+| Intitulé | Identifiant | Mot de passe |
+|----------+-------------+--------------|
+| site1    | login1      | passwd1      |
+| site2    | login2      | passwd2      |
+| site3    | login3      | passwd3      |
+
+#+BEGIN_SRC emacs-lisp :var table=passwords :colnames yes :results none
+  (sb-passwd-append-from-org-table table)
+#+END_SRC
+
+-----end org file-----"
+  (unless key-index (setq key-index
+                          sb-passwd-org-table-key-index))
+  (unless login-index (setq login-index
+                            sb-passwd-org-table-login-index))
+  (unless password-index (setq password-index
+                               sb-passwd-org-table-password-index))
+  (mapc (lambda (row) (sb-passwd-append (nth key-index row)
+                                        (nth login-index row)
+                                        (nth password-index row)))
+        table))
 
 (provide 'sb-passwd)
 
