@@ -26,6 +26,21 @@ The alist maps strings (name of site) to a plist of the form
     (:login login :password password :link link)"
   :type 'list :group 'sb-passwd :tag "Passwords")
 
+(defcustom sb-passwd-org-table-key-index 0
+  "When loading passwords from an Org table, 0-based index of the column
+that holds the key."
+  :type 'integer :group 'sb-passwd :tag "Key index")
+
+(defcustom sb-passwd-org-table-login-index 1
+  "When loading passwords from an Org table, 0-based index of the column
+that holds the login."
+  :type 'integer :group 'sb-passwd :tag "Login index")
+
+(defcustom sb-passwd-org-table-password-index 2
+  "When loading passwords from an Org table, 0-based index of the column
+that holds the password."
+  :type 'integer :group 'sb-passwd :tag "Password index")
+
 (defun sb-passwd-create-password(n &optional use-digits use-letters use-symbols)
   "Return a new password.
 
