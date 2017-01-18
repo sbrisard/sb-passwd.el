@@ -80,22 +80,28 @@ Calls `sb-passwd-create-password' interactively."
   (interactive)
   (insert (call-interactively 'sb-passwd-create-password)))
 
-(defun sb-passwd-append (key login password &rest link)
+(defun sb-passwd-append (key login password)
   "Append new password to the global list of passwords.
 
 This function modifies `sb-passwd-passwords'.
 
+If KEY is a valid Org-mode link, the actual key associated
+with the specified password is the description of the link.
+
 If a mapping for KEY already exists, a warning is issued
 and the function returns nil. Otherwise, the value of
 `sb-passwd-passwords' is returned."
-  (if (assoc-string key sb-passwd-passwords)
-      (progn (display-warning 'sb-passwd
-                              (format-message "Key already exists: %s" key))
-             nil)
-    (setq sb-passwd-passwords
-          (cons (append (list key :login login :password password)
-                        (if link (cons :link link) nil))
-                sb-passwd-passwords))))
+  (let* ((key-and-link (sb-passwd-parse-org-link key))
+         (link (cdr key-and-link)))
+    (setq key (car key-and-link))
+    (if (assoc-string key sb-passwd-passwords)
+        (progn (display-warning 'sb-passwd
+                                (format-message "Key already exists: %s" key))
+               nil)
+      (setq sb-passwd-passwords
+            (cons (append (list key :login login :password password)
+                          (if link (list :link link) nil))
+                  sb-passwd-passwords)))))
 
 (defun sb-passwd-get (key what)
   "Return the value associated with the password KEY.
