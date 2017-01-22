@@ -172,6 +172,8 @@ The default values of FILENAME and REF are
 (defun sb-passwd-append-from-org-table (table &optional key-index login-index password-index)
   "Populate `sb-passwd-passwords' with the org-table TABLE.
 
+The function returns the updated value of `sb-passwd-passwords'.
+
 Each line of the table corresponds to a new password. The optional
 arguments KEY-INDEX, LOGIN-INDEX and PASSWORD-INDEX specify the
 0-based column indices of the key, login and password, respectively.
@@ -211,7 +213,8 @@ An example of Org file would read like this
   (mapc (lambda (row) (sb-passwd-append (nth key-index row)
                                         (nth login-index row)
                                         (nth password-index row)))
-        table))
+        table)
+  sb-passwd-passwords)
 
 
 (provide 'sb-passwd)
