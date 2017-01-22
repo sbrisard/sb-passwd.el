@@ -140,11 +140,11 @@ respectively. An example of Org file would read like this
 -----begin org file-----
 
 #+NAME: passwords
-| Intitulé | Identifiant | Mot de passe |
-|----------+-------------+--------------|
-| site1    | login1      | passwd1      |
-| site2    | login2      | passwd2      |
-| site3    | login3      | passwd3      |
+| Key   | Login  | Password |
+|-------+--------+----------|
+| site1 | login1 | passwd1  |
+| site2 | login2 | passwd2  |
+| site3 | login3 | passwd3  |
 
 #+BEGIN_SRC emacs-lisp :var table=passwords :colnames yes :results none
   (sb-passwd-append-from-org-table table)
