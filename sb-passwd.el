@@ -26,6 +26,16 @@ The alist maps strings (name of site) to a plist of the form
     (:login login :password password :link link)"
   :type 'list :group 'sb-passwd :tag "Passwords")
 
+(defcustom sb-passwd-org-table-filename ""
+  "Name of the Org file that contains the password table."
+  :type 'string :group 'sb-passwd :tag "File name")
+
+(defcustom sb-passwd-org-table-name "passwords"
+  "Name of the Org table that holds the passwords.
+
+The table name is specified by a #+NAME directive."
+  :type 'string :group 'sb-passwd :tag "Table name")
+
 (defcustom sb-passwd-org-table-key-index 0
   "When loading passwords from an Org table, 0-based index of the column
 that holds the key."
@@ -136,6 +146,29 @@ To avoid this issue, the present function locally binds
   (cl-letf (((symbol-function 'org-babel--string-to-number) 'identity))
     (org-babel-ref-resolve ref)))
 
+(defun sb-passwd-load-table-from-file (&optional filename name)
+  "Return the Org table named NAME in file named FILENAME.
+
+Table should be named by a #+NAME directive.
+
+Uses `sb-passwd-org-babel-ref-resolve' internally.
+
+The default values of FILENAME and REF are
+`sb-passwd-org-table-filename' and
+`sb-passwd-org-table-name', respectively."
+  (let ((buffer)
+        (kill-buffer-on-return)
+        (table))
+    (unless filename (setq filename sb-passwd-org-table-filename))
+    (unless name (setq name sb-passwd-org-table-name))
+    (unless (setq buffer (find-buffer-visiting filename))
+      (setq buffer (find-file filename))
+      (setq kill-buffer-on-return t))
+    (with-current-buffer buffer
+      (setq table (sb-passwd-org-babel-ref-resolve name)))
+    (when kill-buffer-on-return (kill-buffer buffer))
+    table))
+
 (defun sb-passwd-append-from-org-table (table &optional key-index login-index password-index)
   "Populate `sb-passwd-passwords' with the org-table TABLE.
 
@@ -179,6 +212,7 @@ An example of Org file would read like this
                                         (nth login-index row)
                                         (nth password-index row)))
         table))
+
 
 (provide 'sb-passwd)
 
