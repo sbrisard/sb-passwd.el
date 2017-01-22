@@ -149,7 +149,10 @@ Default values for these optional arguments are defined by
   - `sb-passwd-org-table-login-index',
   - `sb-passwd-org-table-password-index',
 
-respectively. An example of Org file would read like this
+respectively. In order to avoid issues with number-like passwords,
+`sb-passwd-org-babel-ref-resolve' should be used to parse the table.
+
+An example of Org file would read like this
 
 -----begin org file-----
 
@@ -160,7 +163,8 @@ respectively. An example of Org file would read like this
 | site2 | login2 | passwd2  |
 | site3 | login3 | passwd3  |
 
-#+BEGIN_SRC emacs-lisp :var table=passwords :colnames yes :results none
+#+HEADER: :var table=(sb-passwd-org-babel-ref-resolve \"table20170119\")
+#+BEGIN_SRC emacs-lisp :colnames yes :results none
   (sb-passwd-append-from-org-table table)
 #+END_SRC
 
