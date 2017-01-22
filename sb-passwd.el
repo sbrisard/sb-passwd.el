@@ -122,6 +122,20 @@ list."
       (cons (match-string 2 link) (match-string 1 link))
     (cons link ())))
 
+(defun sb-passwd-org-babel-ref-resolve (ref)
+  "Same as `org-babel-ref-resolve', but for numbers that are not parsed.
+
+The Org-Mode function `org-babel-ref-resolve' uses
+`org-babel--string-to-number' to convert number-like table cells to
+numbers. This can lead long, digits only passwords, to be parsed as
+floats.
+
+To avoid this issue, the present function locally binds
+`org-babel--string-to-number' to `identity' before calling
+`org-babel-ref-resolve'."
+  (cl-letf (((symbol-function 'org-babel--string-to-number) 'identity))
+    (org-babel-ref-resolve ref)))
+
 (defun sb-passwd-append-from-org-table (table &optional key-index login-index password-index)
   "Populate `sb-passwd-passwords' with the org-table TABLE.
 
