@@ -132,7 +132,7 @@ list."
       (cons (match-string 2 link) (match-string 1 link))
     (cons link ())))
 
-(defun sb-passwd-org-babel-ref-resolve (ref)
+(defun sb-passwd--org-babel-ref-resolve (ref)
   "Same as `org-babel-ref-resolve', but for numbers that are not parsed.
 
 The Org-Mode function `org-babel-ref-resolve' uses
@@ -151,7 +151,7 @@ To avoid this issue, the present function locally binds
 
 Table should be named by a #+NAME directive.
 
-Uses `sb-passwd-org-babel-ref-resolve' internally.
+Uses `sb-passwd--org-babel-ref-resolve' internally.
 
 The default values of FILENAME and REF are
 `sb-passwd-org-file-name' and
@@ -165,7 +165,7 @@ The default values of FILENAME and REF are
       (setq buffer (find-file filename))
       (setq kill-buffer-on-return t))
     (with-current-buffer buffer
-      (setq table (sb-passwd-org-babel-ref-resolve name)))
+      (setq table (sb-passwd--org-babel-ref-resolve name)))
     (when kill-buffer-on-return (kill-buffer buffer))
     table))
 
@@ -185,7 +185,7 @@ Default values for these optional arguments are defined by
   - `sb-passwd-org-table-password-index',
 
 respectively. In order to avoid issues with number-like passwords,
-`sb-passwd-org-babel-ref-resolve' should be used to parse the table.
+`sb-passwd--org-babel-ref-resolve' should be used to parse the table.
 
 An example of Org file would read like this
 
@@ -198,7 +198,7 @@ An example of Org file would read like this
 | site2 | login2 | passwd2  |
 | site3 | login3 | passwd3  |
 
-#+HEADER: :var table=(sb-passwd-org-babel-ref-resolve \"table20170119\")
+#+HEADER: :var table=(sb-passwd--org-babel-ref-resolve \"table20170119\")
 #+BEGIN_SRC emacs-lisp :colnames yes :results none
   (sb-passwd-append-from-org-table table)
 #+END_SRC
