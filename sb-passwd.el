@@ -123,7 +123,7 @@ The function returns nil if KEY is not present, or WHAT is not specified
 for KEY."
   (plist-get (cdr (assoc-string key sb-passwd-passwords)) what))
 
-(defun sb-passwd-parse-org-link(link)
+(defun sb-passwd--parse-org-link(link)
   "Parse an org-link and returns a (description . link) cons cell.
 
 If LINK is not an org hyperlink, then it is returned as a one-element
