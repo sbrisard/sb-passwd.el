@@ -169,7 +169,7 @@ The default values of FILENAME and REF are
     (when kill-buffer-on-return (kill-buffer buffer))
     table))
 
-(defun sb-passwd-append-from-org-table (table &optional key-index login-index password-index)
+(defun sb-passwd-append-from-table (table &optional key-index login-index password-index)
   "Populate `sb-passwd-passwords' with the org-table TABLE.
 
 The function returns the updated value of `sb-passwd-passwords'.
@@ -200,7 +200,7 @@ An example of Org file would read like this
 
 #+HEADER: :var table=(sb-passwd--org-babel-ref-resolve \"table20170119\")
 #+BEGIN_SRC emacs-lisp :colnames yes :results none
-  (sb-passwd-append-from-org-table table)
+  (sb-passwd-append-from-table table)
 #+END_SRC
 
 -----end org file-----"
