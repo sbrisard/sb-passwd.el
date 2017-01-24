@@ -26,7 +26,7 @@ The alist maps strings (name of site) to a plist of the form
     (:login login :password password :link link)"
   :type 'list :group 'sb-passwd :tag "Passwords")
 
-(defcustom sb-passwd-org-table-filename ""
+(defcustom sb-passwd-org-file-name ""
   "Name of the Org file that contains the password table."
   :type 'string :group 'sb-passwd :tag "File name")
 
@@ -154,12 +154,12 @@ Table should be named by a #+NAME directive.
 Uses `sb-passwd-org-babel-ref-resolve' internally.
 
 The default values of FILENAME and REF are
-`sb-passwd-org-table-filename' and
+`sb-passwd-org-file-name' and
 `sb-passwd-org-table-name', respectively."
   (let ((buffer)
         (kill-buffer-on-return)
         (table))
-    (unless filename (setq filename sb-passwd-org-table-filename))
+    (unless filename (setq filename sb-passwd-org-file-name))
     (unless name (setq name sb-passwd-org-table-name))
     (unless (setq buffer (find-buffer-visiting filename))
       (setq buffer (find-file filename))
