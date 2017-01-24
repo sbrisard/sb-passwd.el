@@ -101,7 +101,7 @@ with the specified password is the description of the link.
 If a mapping for KEY already exists, a warning is issued
 and the function returns nil. Otherwise, the value of
 `sb-passwd-passwords' is returned."
-  (let* ((key-and-link (sb-passwd-parse-org-link key))
+  (let* ((key-and-link (sb-passwd--parse-org-link key))
          (link (cdr key-and-link)))
     (setq key (car key-and-link))
     (if (assoc-string key sb-passwd-passwords)
