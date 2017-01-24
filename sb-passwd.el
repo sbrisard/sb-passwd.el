@@ -170,13 +170,14 @@ The default values of FILENAME and REF are
     table))
 
 (defun sb-passwd-append-from-table (table &optional key-index login-index password-index)
-  "Populate `sb-passwd-passwords' with the org-table TABLE.
+  "Populate `sb-passwd-passwords' with the table TABLE.
 
 The function returns the updated value of `sb-passwd-passwords'.
 
-Each line of the table corresponds to a new password. The optional
-arguments KEY-INDEX, LOGIN-INDEX and PASSWORD-INDEX specify the
-0-based column indices of the key, login and password, respectively.
+TABLE should be a list (rows) of lists (columns). Each row of the table
+corresponds to a new password. The optional arguments KEY-INDEX,
+LOGIN-INDEX and PASSWORD-INDEX specify the 0-based column indices of the
+key, login and password, respectively.
 
 Default values for these optional arguments are defined by
 
@@ -185,7 +186,8 @@ Default values for these optional arguments are defined by
   - `sb-passwd-org-table-password-index',
 
 respectively. In order to avoid issues with number-like passwords,
-`sb-passwd--org-babel-ref-resolve' should be used to parse the table.
+`sb-passwd--org-babel-ref-resolve' should be used to parse the table
+from an Org file.
 
 An example of Org file would read like this
 
