@@ -210,6 +210,24 @@ An example of Org file would read like this
         table)
   sb-passwd-passwords)
 
+(defun sb-passwd-password-to-kill-ring (key)
+  "Make the password for site KEY the latest kill in the kill ring.
+
+The function returns the password (\"\" if KEY does not exist in
+`sb-passwd-passwords').
+
+When called interactively, it also echoes a message recalling the
+login."
+  (interactive (list (completing-read "Password for site: "
+                                      (sort (map 'list
+                                                 'car
+                                                 sb-passwd-passwords)
+                                            'string<))))
+  (let ((login (sb-passwd-get key :login)))
+    (if (not login) ""
+      (when (interactive-p)
+        (message "Your login for site \"%s\" is: %s" key login))
+      (kill-new (sb-passwd-get key :password)))))
 
 (provide 'sb-passwd)
 
