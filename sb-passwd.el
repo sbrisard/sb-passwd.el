@@ -232,10 +232,3 @@ login."
 (provide 'sb-passwd)
 
 ;;; sb-passwd.el ends here
-
-
-
-;; (setq passwords '(("site1" "passwd1") ("site2" "passwd2")))
-;; (assoc "site1" passwords)
-;; (completing-read "site?" '("x" "y" "z"))
-;; (map 'list 'car passwords)
