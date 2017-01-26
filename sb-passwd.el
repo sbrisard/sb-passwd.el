@@ -24,7 +24,12 @@ error \"org-babel-read: End of file during parsing\"."
 The alist maps strings (name of site) to a plist of the form
 
     (:login login :password password :link link)"
-  :type 'list :group 'sb-passwd :tag "Passwords")
+  :type '(repeat (list :tag "bli"
+                       (string :tag "Key")
+                       (string :tag "Login   ")
+                       (string :tag "Password")
+                       (string :tag "Link    ")))
+  :group 'sb-passwd :tag "Passwords")
 
 (defcustom sb-passwd-org-file-name ""
   "Name of the Org file that contains the password table."
