@@ -12,10 +12,10 @@
 (defcustom sb-passwd-symbols "!#$%&‘()*+,-./:;<=>?@[\]^{}~"
   "List of symbols that are allowed in passwords.
 
-By default, some symbols are prohibited.  For example, the
-vertical bar | interferes with Org-mode table delimiters.  Also,
-the double quote causes `org-table-read' to raise the following
-error \"org-babel-read: End of file during parsing\"."
+By default, some symbols are prohibited.  For example, the vertical
+bar | interferes with Org-mode table delimiters.  Also, the double
+quote causes `org-table-read' to raise the following error
+\"org-babel-read: End of file during parsing\"."
   :type 'string :group 'sb-passwd :tag "Symbols")
 
 (defcustom sb-passwd-org-file-name ""
@@ -29,29 +29,35 @@ The table name is specified by a #+NAME directive."
   :type 'string :group 'sb-passwd :tag "Table name")
 
 (defcustom sb-passwd-org-table-key-index 0
-  "When loading passwords from an Org table, 0-based index of the column
-that holds the key."
+  "Index (0-based) of the column that holds the key.
+
+This is used when loading passwords from e.g. an Org table."
   :type 'integer :group 'sb-passwd :tag "Key index")
 
 (defcustom sb-passwd-org-table-login-index 1
-  "When loading passwords from an Org table, 0-based index of the column
-that holds the login."
+  "Index (0-based) of the column that holds the login.
+
+This is used when loading passwords from e.g. an Org table."
   :type 'integer :group 'sb-passwd :tag "Login index")
 
 (defcustom sb-passwd-org-table-password-index 2
-  "When loading passwords from an Org table, 0-based index of the column
-that holds the password."
+  "Index (0-based) of the column that holds the password.
+
+This is used when loading passwords from e.g. an Org table."
   :type 'integer :group 'sb-passwd :tag "Password index")
 
 (defun sb-passwd-create-password(n &optional use-digits use-letters use-symbols)
   "Return a new password.
 
-N is the total length of the password (number of signs). When
-USE-DIGITS is true, the returned password may include digits
-[0-9]. When USE-LETTERS is true, the returned password may
-include letters [a-zA-Z]. Finally, when USE-SYMBOLS is true, the
-returned password is allowed to include the additional symbols
-defined by `sb-passwd-symbols'.
+N is the total length of the password (number of signs).
+
+When USE-DIGITS is true, the returned password may include digits [0-9].
+
+When USE-LETTERS is true, the returned password may include letters
+[a-zA-Z].
+
+When USE-SYMBOLS is true, the returned password is allowed to include
+the additional symbols defined by `sb-passwd-symbols'.
 
 When called interactively, N can be passed as a prefix argument."
   (interactive (list
@@ -85,14 +91,16 @@ Calls `sb-passwd-create-password' interactively."
 (defun sb-passwd-append (key login password)
   "Append new password to the global list of passwords.
 
-This function modifies `sb-passwd-passwords'.
+This function adds a new entry associated to KEY in
+`sb-passwd-passwords'.  LOGIN and PASSWORD are the login and password
+associated with KEY.
 
-If KEY is a valid Org-mode link, the actual key associated
-with the specified password is the description of the link.
+If KEY is a valid Org-mode link, the actual key associated with the
+specified password is the description of the link.
 
-If a mapping for KEY already exists, a warning is issued
-and the function returns nil. Otherwise, the value of
-`sb-passwd-passwords' is returned."
+If a mapping for KEY already exists, a warning is issued and the
+function returns nil.  Otherwise, the value of `sb-passwd-passwords' is
+returned."
   (let* ((key-and-link (sb-passwd--parse-org-link key))
          (link (cdr key-and-link)))
     (setq key (car key-and-link))
@@ -108,7 +116,7 @@ and the function returns nil. Otherwise, the value of
 (defun sb-passwd-get (key what)
   "Return the value associated with the password KEY.
 
-WHAT specifies the information that must be returned. It must be one of
+WHAT specifies the information that must be returned.  It must be one of
 :login, :password or :link.
 
 The function returns nil if KEY is not present, or WHAT is not specified
@@ -125,11 +133,13 @@ list."
     (cons link ())))
 
 (defun sb-passwd--org-babel-ref-resolve (ref)
-  "Same as `org-babel-ref-resolve', but for numbers that are not parsed.
+  "Resolve the reference REF and return its value.
+
+Same as `org-babel-ref-resolve', but for numbers that are not parsed.
 
 The Org-Mode function `org-babel-ref-resolve' uses
 `org-babel--string-to-number' to convert number-like table cells to
-numbers. This can lead long, digits only passwords, to be parsed as
+numbers.  This can lead long, digits only passwords, to be parsed as
 floats.
 
 To avoid this issue, the present function locally binds
@@ -138,26 +148,25 @@ To avoid this issue, the present function locally binds
   (cl-letf (((symbol-function 'org-babel--string-to-number) 'identity))
     (org-babel-ref-resolve ref)))
 
-(defun sb-passwd-load-table-from-file (&optional filename name)
-  "Return the Org table named NAME in file named FILENAME.
+(defun sb-passwd-load-table-from-file (&optional filename tablename)
+  "Return the Org table from file FILENAME, named TABLENAME.
 
 Table should be named by a #+NAME directive.
 
 Uses `sb-passwd--org-babel-ref-resolve' internally.
 
-The default values of FILENAME and REF are
-`sb-passwd-org-file-name' and
-`sb-passwd-org-table-name', respectively."
+The default values of FILENAME and TABLENAME are
+`sb-passwd-org-file-name' and `sb-passwd-org-table-name', respectively."
   (let ((buffer)
         (kill-buffer-on-return)
         (table))
     (unless filename (setq filename sb-passwd-org-file-name))
-    (unless name (setq name sb-passwd-org-table-name))
+    (unless tablename (setq tablename sb-passwd-org-table-name))
     (unless (setq buffer (find-buffer-visiting filename))
       (setq buffer (find-file filename))
       (setq kill-buffer-on-return t))
     (with-current-buffer buffer
-      (setq table (sb-passwd--org-babel-ref-resolve name)))
+      (setq table (sb-passwd--org-babel-ref-resolve tablename)))
     (when kill-buffer-on-return (kill-buffer buffer))
     table))
 
@@ -166,8 +175,8 @@ The default values of FILENAME and REF are
 
 The function returns the updated value of `sb-passwd-passwords'.
 
-TABLE should be a list (rows) of lists (columns). Each row of the table
-corresponds to a new password. The optional arguments KEY-INDEX,
+TABLE should be a list (rows) of lists (columns).  Each row of the table
+corresponds to a new password.  The optional arguments KEY-INDEX,
 LOGIN-INDEX and PASSWORD-INDEX specify the 0-based column indices of the
 key, login and password, respectively.
 
@@ -177,7 +186,7 @@ Default values for these optional arguments are defined by
   - `sb-passwd-org-table-login-index',
   - `sb-passwd-org-table-password-index',
 
-respectively. In order to avoid issues with number-like passwords,
+respectively.  In order to avoid issues with number-like passwords,
 `sb-passwd--org-babel-ref-resolve' should be used to parse the table
 from an Org file.
 
