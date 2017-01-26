@@ -18,19 +18,6 @@ the double quote causes `org-table-read' to raise the following
 error \"org-babel-read: End of file during parsing\"."
   :type 'string :group 'sb-passwd :tag "Symbols")
 
-(defcustom sb-passwd-passwords ()
-  "Alist of all stored passwords.
-
-The alist maps strings (name of site) to a plist of the form
-
-    (:login login :password password :link link)"
-  :type '(repeat (list :tag "bli"
-                       (string :tag "Key")
-                       (string :tag "Login   ")
-                       (string :tag "Password")
-                       (string :tag "Link    ")))
-  :group 'sb-passwd :tag "Passwords")
-
 (defcustom sb-passwd-org-file-name ""
   "Name of the Org file that contains the password table."
   :type 'string :group 'sb-passwd :tag "File name")
