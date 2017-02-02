@@ -7,6 +7,8 @@
 
 (random t)
 
+(defvar sb-passwd-passwords ())
+
 (defgroup sb-passwd nil "Password management.")
 
 (defcustom sb-passwd-symbols "!#$%&‘()*+,-./:;<=>?@[\]^{}~"
