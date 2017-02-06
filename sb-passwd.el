@@ -261,6 +261,13 @@ is created if it does not exist."
     (read-only-mode 1)
     (current-buffer)))
 
+(defun sb-passwd--get-menu-selection ()
+  "Display the menu buffer and returns the users selection."
+  (with-current-buffer (sb-passwd--setup-menu-buffer)
+    (display-buffer-below-selected (current-buffer)
+                                   '((window-height . fit-window-to-buffer)))
+    (read-char-choice "sb-passwd command: " '(?p ?P ?k ?K ?q ?Q))))
+
 (provide 'sb-passwd)
 
 ;;; sb-passwd.el ends here
