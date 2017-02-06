@@ -90,6 +90,13 @@ Calls `sb-passwd-create-password' interactively."
   (interactive)
   (insert (call-interactively 'sb-passwd-create-password)))
 
+(defun sb-passwd-new-password-to-kill-ring ()
+  "Create a new password and make it the latest kill in the kill ring.
+
+Calls `sb-passwd-create-password' interactively."
+  (interactive)
+  (kill-new (call-interactively 'sb-passwd-create-password)))
+
 (defun sb-passwd-append (key login password)
   "Append new password to the global list of passwords.
 
