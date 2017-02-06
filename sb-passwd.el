@@ -296,9 +296,10 @@ is created if it does not exist."
 
 (defun sb-passwd-menu ()
   "Display the menu buffer and call the selected action."
-  (let ((actions '((?p . (lambda () (message "p")))
+  (let ((actions '((?p . sb-passwd-insert-password)
                    (?P . sb-passwd-insert-new-password)
-                   (?k . sb-passwd-password-to-kill-ring))))
+                   (?k . sb-passwd-password-to-kill-ring)
+                   (?K . sb-passwd-new-password-to-kill-ring))))
     (call-interactively (cdr (assoc (sb-passwd--get-menu-selection) actions)))))
 
 (provide 'sb-passwd)
