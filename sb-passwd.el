@@ -268,6 +268,13 @@ is created if it does not exist."
                                    '((window-height . fit-window-to-buffer)))
     (read-char-choice "sb-passwd command: " '(?p ?P ?k ?K ?q ?Q))))
 
+(defun sb-passwd-menu ()
+  "Display the menu buffer and call the selected action."
+  (let ((actions '((?p . (lambda () (message "p")))
+                   (?P . sb-passwd-insert-new-password)
+                   (?k . sb-passwd-password-to-kill-ring))))
+    (call-interactively (cdr (assoc (sb-passwd--get-menu-selection) actions)))))
+
 (provide 'sb-passwd)
 
 ;;; sb-passwd.el ends here
