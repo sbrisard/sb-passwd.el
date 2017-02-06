@@ -240,6 +240,27 @@ login."
         (message "Your login for site \"%s\" is: %s" key login))
       (kill-new (sb-passwd-get key :password)))))
 
+(defun sb-passwd--setup-menu-buffer ()
+  "Set up a menu buffer for the selection of actions.
+
+The function returns a read-only buffer *sb-passwd menu*, which
+is created if it does not exist."
+  (with-current-buffer (get-buffer-create "*sb-passwd menu*")
+    (read-only-mode -1)
+    (erase-buffer)
+    (setq cursor-type nil)
+    (insert "Existing passwords       New password\n")
+    (insert "------------------       ------------\n\n")
+    (insert (apply 'format (concat "[%s] Insert at point      "
+                                   "[%s] Insert at point\n"
+                                   "[%s] Save to kill ring    "
+                                   "[%s] Save to kill ring\n")
+                   (mapcar (lambda (text) (propertize text 'face 'warning))
+                           '("p" "P" "k" "K"))))
+    (insert (format "\n[%s] Quit" (propertize "q/Q" 'face 'success)))
+    (read-only-mode 1)
+    (current-buffer)))
+
 (provide 'sb-passwd)
 
 ;;; sb-passwd.el ends here
