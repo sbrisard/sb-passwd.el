@@ -83,20 +83,6 @@ When called interactively, N can be passed as a prefix argument."
       (unless signs (setq signs "0123456789"))
       (dotimes (i n password) (aset password i (aref signs (random (length signs))))))))
 
-(defun sb-passwd-insert-new-password ()
-  "Insert new password at point.
-
-Calls `sb-passwd-create-password' interactively."
-  (interactive)
-  (insert (call-interactively 'sb-passwd-create-password)))
-
-(defun sb-passwd-new-password-to-kill-ring ()
-  "Create a new password and make it the latest kill in the kill ring.
-
-Calls `sb-passwd-create-password' interactively."
-  (interactive)
-  (kill-new (call-interactively 'sb-passwd-create-password)))
-
 (defun sb-passwd-append (key login password)
   "Append new password to the global list of passwords.
 
@@ -264,6 +250,20 @@ See also `sb-passwd--get-password'."
 See also `sb-passwd--get-password'."
   (interactive (list (sb-passwd--select-key)))
   (kill-new (sb-passwd--get-password key)))
+
+(defun sb-passwd-insert-new-password ()
+  "Insert new password at point.
+
+Calls `sb-passwd-create-password' interactively."
+  (interactive)
+  (insert (call-interactively 'sb-passwd-create-password)))
+
+(defun sb-passwd-new-password-to-kill-ring ()
+  "Create a new password and make it the latest kill in the kill ring.
+
+Calls `sb-passwd-create-password' interactively."
+  (interactive)
+  (kill-new (call-interactively 'sb-passwd-create-password)))
 
 (defun sb-passwd--setup-menu-buffer ()
   "Set up a menu buffer for the selection of actions.
