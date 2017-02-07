@@ -228,43 +228,42 @@ An example of Org file would read like this
         table)
   sb-passwd-passwords)
 
-(defun sb-passwd-insert-password (key)
-  "Insert at point the password for site KEY.
+(defun sb-passwd--select-key ()
+  "Select the site key, using `completing-read'.
 
-The function returns the password (\"\" if KEY does not exist in
+The function returns the selected key as a string."
+  (interactive)
+  (completing-read "Password for site: "
+                   (sort (map 'list 'car sb-passwd-passwords) 'string<)))
+
+(defun sb-passwd--get-password (key)
+  "Return the password for site KEY.
+
+The function returns \"\" if KEY does not exist in
 `sb-passwd-passwords').
 
 When called interactively, it also echoes a message recalling the
 login."
-  (interactive (list (completing-read "Password for site: "
-                                      (sort (map 'list
-                                                 'car
-                                                 sb-passwd-passwords)
-                                            'string<))))
+  (interactive (list (sb-passwd--select-key)))
   (let ((login (sb-passwd-get key :login)))
     (if (not login) ""
       (when (interactive-p)
         (message "Your login for site \"%s\" is: %s" key login))
-      (insert (sb-passwd-get key :password)))))
+      (sb-passwd-get key :password))))
+
+(defun sb-passwd-insert-password (key)
+  "Insert at point the password for site KEY.
+
+See also `sb-passwd--get-password'."
+  (interactive (list (sb-passwd--select-key)))
+  (insert (sb-passwd--get-password key)))
 
 (defun sb-passwd-password-to-kill-ring (key)
   "Make the password for site KEY the latest kill in the kill ring.
 
-The function returns the password (\"\" if KEY does not exist in
-`sb-passwd-passwords').
-
-When called interactively, it also echoes a message recalling the
-login."
-  (interactive (list (completing-read "Password for site: "
-                                      (sort (map 'list
-                                                 'car
-                                                 sb-passwd-passwords)
-                                            'string<))))
-  (let ((login (sb-passwd-get key :login)))
-    (if (not login) ""
-      (when (interactive-p)
-        (message "Your login for site \"%s\" is: %s" key login))
-      (kill-new (sb-passwd-get key :password)))))
+See also `sb-passwd--get-password'."
+  (interactive (list (sb-passwd--select-key)))
+  (kill-new (sb-passwd--get-password key)))
 
 (defun sb-passwd--setup-menu-buffer ()
   "Set up a menu buffer for the selection of actions.
@@ -296,6 +295,7 @@ is created if it does not exist."
 
 (defun sb-passwd-menu ()
   "Display the menu buffer and call the selected action."
+  (interactive)
   (let ((actions '((?p . sb-passwd-insert-password)
                    (?P . sb-passwd-insert-new-password)
                    (?k . sb-passwd-password-to-kill-ring)
