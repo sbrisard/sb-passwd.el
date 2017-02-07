@@ -68,7 +68,7 @@ When called interactively, N can be passed as a prefix argument."
                 (if (and current-prefix-arg
                          (not (consp current-prefix-arg)))
                     (prefix-numeric-value current-prefix-arg)
-                  (read-number "Length of password:" 10))
+                  (read-number "Length of password: " 10))
                 (y-or-n-p "Use digits? ")
                 (y-or-n-p "Use letters? ")
                 (y-or-n-p "Use symbols? ")))
