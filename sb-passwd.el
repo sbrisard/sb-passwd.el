@@ -20,34 +20,6 @@ quote causes `org-table-read' to raise the following error
 \"org-babel-read: End of file during parsing\"."
   :type 'string :group 'sb-passwd :tag "Symbols")
 
-(defcustom sb-passwd-org-file-name ""
-  "Name of the Org file that contains the password table."
-  :type 'string :group 'sb-passwd :tag "File name")
-
-(defcustom sb-passwd-org-table-name "passwords"
-  "Name of the Org table that holds the passwords.
-
-The table name is specified by a #+NAME directive."
-  :type 'string :group 'sb-passwd :tag "Table name")
-
-(defcustom sb-passwd-org-table-key-index 0
-  "Index (0-based) of the column that holds the key.
-
-This is used when loading passwords from e.g. an Org table."
-  :type 'integer :group 'sb-passwd :tag "Key index")
-
-(defcustom sb-passwd-org-table-login-index 1
-  "Index (0-based) of the column that holds the login.
-
-This is used when loading passwords from e.g. an Org table."
-  :type 'integer :group 'sb-passwd :tag "Login index")
-
-(defcustom sb-passwd-org-table-password-index 2
-  "Index (0-based) of the column that holds the password.
-
-This is used when loading passwords from e.g. an Org table."
-  :type 'integer :group 'sb-passwd :tag "Password index")
-
 (defun sb-passwd-create-password(n &optional use-digits use-letters use-symbols)
   "Return a new password.
 
@@ -143,20 +115,15 @@ To avoid this issue, the present function locally binds
   (cl-letf (((symbol-function 'org-babel--string-to-number) 'identity))
     (org-babel-ref-resolve ref)))
 
-(defun sb-passwd-load-table-from-file (&optional filename tablename)
+(defun sb-passwd-load-table-from-file (filename tablename)
   "Return the Org table from file FILENAME, named TABLENAME.
 
 Table should be named by a #+NAME directive.
 
-Uses `sb-passwd--org-babel-ref-resolve' internally.
-
-The default values of FILENAME and TABLENAME are
-`sb-passwd-org-file-name' and `sb-passwd-org-table-name', respectively."
+Uses `sb-passwd--org-babel-ref-resolve' internally."
   (let ((buffer)
         (kill-buffer-on-return)
         (table))
-    (unless filename (setq filename sb-passwd-org-file-name))
-    (unless tablename (setq tablename sb-passwd-org-table-name))
     (unless (setq buffer (find-buffer-visiting filename))
       (setq buffer (find-file filename))
       (setq kill-buffer-on-return t))
@@ -165,25 +132,19 @@ The default values of FILENAME and TABLENAME are
     (when kill-buffer-on-return (kill-buffer buffer))
     table))
 
-(defun sb-passwd-append-from-table (table &optional key-index login-index password-index)
+(defun sb-passwd-append-from-table (table key-index login-index password-index)
   "Populate `sb-passwd-passwords' with the table TABLE.
 
 The function returns the updated value of `sb-passwd-passwords'.
 
-TABLE should be a list (rows) of lists (columns).  Each row of the table
-corresponds to a new password.  The optional arguments KEY-INDEX,
-LOGIN-INDEX and PASSWORD-INDEX specify the 0-based column indices of the
-key, login and password, respectively.
+TABLE should be a list (rows) of lists (columns).  Each row of
+the table corresponds to a new password.  The arguments
+KEY-INDEX, LOGIN-INDEX and PASSWORD-INDEX specify the 0-based
+column indices of the key, login and password, respectively.
 
-Default values for these optional arguments are defined by
-
-  - `sb-passwd-org-table-key-index',
-  - `sb-passwd-org-table-login-index',
-  - `sb-passwd-org-table-password-index',
-
-respectively.  In order to avoid issues with number-like passwords,
-`sb-passwd--org-babel-ref-resolve' should be used to parse the table
-from an Org file.
+In order to avoid issues with number-like passwords,
+`sb-passwd--org-babel-ref-resolve' should be used to parse the
+table from an Org file.
 
 An example of Org file would read like this
 
@@ -202,17 +163,10 @@ An example of Org file would read like this
 #+END_SRC
 
 -----end org file-----"
-  (unless key-index (setq key-index
-                          sb-passwd-org-table-key-index))
-  (unless login-index (setq login-index
-                            sb-passwd-org-table-login-index))
-  (unless password-index (setq password-index
-                               sb-passwd-org-table-password-index))
   (mapc (lambda (row) (sb-passwd-append (nth key-index row)
                                         (nth login-index row)
                                         (nth password-index row)))
-        table)
-  sb-passwd-passwords)
+        table) sb-passwd-passwords)
 
 (defun sb-passwd--select-key ()
   "Select the site key, using `completing-read'.
