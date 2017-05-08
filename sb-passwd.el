@@ -241,7 +241,7 @@ is created if it does not exist."
     (current-buffer)))
 
 (defun sb-passwd--get-menu-selection ()
-  "Display the menu buffer and returns the users selection."
+  "Display the menu buffer and return the users selection."
   (with-current-buffer (sb-passwd--setup-menu-buffer)
     (display-buffer-below-selected (current-buffer)
                                    '((window-height . fit-window-to-buffer)))
