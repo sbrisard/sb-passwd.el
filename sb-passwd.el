@@ -27,6 +27,28 @@
 
 ;;; Commentary:
 ;;
+;; This library allows to easily retrieve and insert passwords from
+;; the password list `sb-passwd-passwords'. This package is *not safe*
+;; in the sence that the passwords are stored unencrypted in RAM.
+;;
+;; Credentials (including login, password and url if relevant) can be
+;; added to the list with `sb-passwd-append'; `sb-passwd-get'
+;; retrieves these credentials.
+;;
+;; The library provides two functions to retrieve passwords:
+;; `sb-passwd-insert-password', `sb-passwd-password-to-kill-ring'.
+;;
+;; It is also possible to generate new random passwords interactively,
+;; see `sb-passwd-insert-new-password' and
+;; `sb-passwd-new-password-to-kill-ring'.
+;;
+;; These functions can be accessed through an interactive menu, see
+;; `sb-passwd-menu'.
+;;
+;; If credentials are stored in an (encrypted) org table, the
+;; following code snippet will load the table and append the
+;; credentials to `sb-passwd-passwords'.
+;;;
 
 ;;; Code:
 
