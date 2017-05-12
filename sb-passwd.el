@@ -28,8 +28,9 @@
 ;;; Commentary:
 ;;
 ;; This library allows to easily retrieve and insert passwords from
-;; the password list `sb-passwd-credentials'. This package is *not safe*
-;; in the sence that the passwords are stored unencrypted in RAM.
+;; the list of credentials `sb-passwd-credentials'. This package is
+;; *not safe* in the sense that the passwords are stored unencrypted
+;; in RAM.
 ;;
 ;; Credentials (including login, password and url if relevant) can be
 ;; added to the list with `sb-passwd-append'; `sb-passwd-get'
@@ -45,9 +46,11 @@
 ;; These functions can be accessed through an interactive menu, see
 ;; `sb-passwd-menu'.
 ;;
-;; If credentials are stored in an (encrypted) org table, the
-;; following code snippet will load the table and append the
-;; credentials to `sb-passwd-credentials'.
+;; Use `sb-passwd-append-from-table' to populate
+;; `sb-passwd-credentials' with credentials stored in a table (list of
+;; lists). If the table is stored in an org-mode file, then this
+;; function should be combined with `sb-passwd-load-table-from-file'.
+;;
 ;;;
 
 ;;; Code:
