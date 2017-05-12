@@ -28,7 +28,7 @@
 ;;; Commentary:
 ;;
 ;; This library allows to easily retrieve and insert passwords from
-;; the password list `sb-passwd-passwords'. This package is *not safe*
+;; the password list `sb-passwd-credentials'. This package is *not safe*
 ;; in the sence that the passwords are stored unencrypted in RAM.
 ;;
 ;; Credentials (including login, password and url if relevant) can be
@@ -47,14 +47,14 @@
 ;;
 ;; If credentials are stored in an (encrypted) org table, the
 ;; following code snippet will load the table and append the
-;; credentials to `sb-passwd-passwords'.
+;; credentials to `sb-passwd-credentials'.
 ;;;
 
 ;;; Code:
 
 (random t)
 
-(defvar sb-passwd-passwords ())
+(defvar sb-passwd-credentials ())
 
 (defgroup sb-passwd nil "Password management.")
 
@@ -106,26 +106,26 @@ When called interactively, N can be passed as a prefix argument."
   "Append new password to the global list of passwords.
 
 This function adds a new entry associated to KEY in
-`sb-passwd-passwords'.  LOGIN and PASSWORD are the login and password
+`sb-passwd-credentials'.  LOGIN and PASSWORD are the login and password
 associated with KEY.
 
 If KEY is a valid Org-mode link, the actual key associated with the
 specified password is the description of the link.
 
 If a mapping for KEY already exists, a warning is issued and the
-function returns nil.  Otherwise, the value of `sb-passwd-passwords' is
+function returns nil.  Otherwise, the value of `sb-passwd-credentials' is
 returned."
   (let* ((key-and-link (sb-passwd--parse-org-link key))
          (link (cdr key-and-link)))
     (setq key (car key-and-link))
-    (if (assoc-string key sb-passwd-passwords)
+    (if (assoc-string key sb-passwd-credentials)
         (progn (display-warning 'sb-passwd
                                 (format-message "Key already exists: %s" key))
                nil)
-      (setq sb-passwd-passwords
+      (setq sb-passwd-credentials
             (cons (append (list key :login login :password password)
                           (if link (list :link link) nil))
-                  sb-passwd-passwords)))))
+                  sb-passwd-credentials)))))
 
 (defun sb-passwd-get (key what)
   "Return the value associated with the password KEY.
@@ -135,7 +135,7 @@ WHAT specifies the information that must be returned.  It must be one of
 
 The function returns nil if KEY is not present, or WHAT is not specified
 for KEY."
-  (plist-get (cdr (assoc-string key sb-passwd-passwords)) what))
+  (plist-get (cdr (assoc-string key sb-passwd-credentials)) what))
 
 (defun sb-passwd--parse-org-link(link)
   "Parse an org-link and returns a (description . link) cons cell.
@@ -180,9 +180,9 @@ Uses `sb-passwd--org-babel-ref-resolve' internally."
     table))
 
 (defun sb-passwd-append-from-table (table key-index login-index password-index)
-  "Populate `sb-passwd-passwords' with the table TABLE.
+  "Populate `sb-passwd-credentials' with the table TABLE.
 
-The function returns the updated value of `sb-passwd-passwords'.
+The function returns the updated value of `sb-passwd-credentials'.
 
 TABLE should be a list (rows) of lists (columns).  Each row of
 the table corresponds to a new password.  The arguments
@@ -213,7 +213,7 @@ An example of Org file would read like this
   (mapc (lambda (row) (sb-passwd-append (nth key-index row)
                                         (nth login-index row)
                                         (nth password-index row)))
-        table) sb-passwd-passwords)
+        table) sb-passwd-credentials)
 
 (defun sb-passwd--select-key ()
   "Select the site key, using `completing-read'.
@@ -221,13 +221,13 @@ An example of Org file would read like this
 The function returns the selected key as a string."
   (interactive)
   (completing-read "Password for site: "
-                   (sort (map 'list 'car sb-passwd-passwords) 'string<)))
+                   (sort (map 'list 'car sb-passwd-credentials) 'string<)))
 
 (defun sb-passwd--get-password (key)
   "Return the password for site KEY.
 
 The function returns \"\" if KEY does not exist in
-`sb-passwd-passwords').
+`sb-passwd-credentials').
 
 When called interactively, it also echoes a message recalling the
 login."
