@@ -196,23 +196,26 @@ In order to avoid issues with number-like passwords,
 `sb-passwd--org-babel-ref-resolve' should be used to parse the
 table from an Org file.
 
-An example of Org file would read like this
+For credentials stored in an Org file, this function should be combined with `sb-passwd-load-table-from-file' as follows
 
------begin org file-----
+    (sb-passwd-append-from-table
+     (cdr (delq 'hline (sb-passwd-load-table-from-file \"passwords.gpg\"
+                                                       \"passwords\")))
+     0 1 2)
+
+Where the file \"passwords.gpg\" reads
+
+-----begin passwords.gpg-----
+# -*- mode: org; epa-file-encrypt-to: nil; buffer-auto-save-file-name: nil; buffer-read-only: t -*-
 
 #+NAME: passwords
-| Key   | Login  | Password |
-|-------+--------+----------|
-| site1 | login1 | passwd1  |
-| site2 | login2 | passwd2  |
-| site3 | login3 | passwd3  |
+| Key   | Login  | Password | Comment  |
+|-------+--------+----------+----------|
+| site1 | login1 | passwd1  | comment1 |
+| site2 | login2 | passwd2  | comment2 |
+| site3 | login3 | passwd3  | comment3 |
 
-#+HEADER: :var table=(sb-passwd--org-babel-ref-resolve \"table20170119\")
-#+BEGIN_SRC emacs-lisp :colnames yes :results none
-  (sb-passwd-append-from-table table)
-#+END_SRC
-
------end org file-----"
+-----end passwords.gpg-----"
   (mapc (lambda (row) (sb-passwd-append (nth key-index row)
                                         (nth login-index row)
                                         (nth password-index row)))
