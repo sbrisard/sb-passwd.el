@@ -272,43 +272,6 @@ Calls `sb-passwd-create-password' interactively."
   (interactive)
   (kill-new (call-interactively 'sb-passwd-create-password)))
 
-(defun sb-passwd--setup-menu-buffer ()
-  "Set up a menu buffer for the selection of actions.
-
-The function returns a read-only buffer *sb-passwd menu*, which
-is created if it does not exist."
-  (with-current-buffer (get-buffer-create "*sb-passwd menu*")
-    (read-only-mode -1)
-    (erase-buffer)
-    (setq cursor-type nil)
-    (insert "Existing passwords       New password\n")
-    (insert "------------------       ------------\n\n")
-    (insert (apply 'format (concat "[%s] Insert at point      "
-                                   "[%s] Insert at point\n"
-                                   "[%s] Save to kill ring    "
-                                   "[%s] Save to kill ring\n")
-                   (mapcar (lambda (text) (propertize text 'face 'warning))
-                           '("p" "P" "k" "K"))))
-    (insert (format "\n[%s] Quit" (propertize "q/Q" 'face 'success)))
-    (read-only-mode 1)
-    (current-buffer)))
-
-(defun sb-passwd--get-menu-selection ()
-  "Display the menu buffer and return the users selection."
-  (with-current-buffer (sb-passwd--setup-menu-buffer)
-    (display-buffer-below-selected (current-buffer)
-                                   '((window-height . fit-window-to-buffer)))
-    (read-char-choice "sb-passwd command: " '(?p ?P ?k ?K ?q ?Q))))
-
-(defun sb-passwd-menu ()
-  "Display the menu buffer and call the selected action."
-  (interactive)
-  (let ((actions '((?p . sb-passwd-insert-password)
-                   (?P . sb-passwd-insert-new-password)
-                   (?k . sb-passwd-password-to-kill-ring)
-                   (?K . sb-passwd-new-password-to-kill-ring))))
-    (call-interactively (cdr (assoc (sb-passwd--get-menu-selection) actions)))))
-
 (provide 'sb-passwd)
 
 ;;; sb-passwd.el ends here
