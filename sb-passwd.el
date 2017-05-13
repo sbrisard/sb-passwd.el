@@ -51,6 +51,9 @@
 ;; lists). If the table is stored in an org-mode file, then this
 ;; function should be combined with `sb-passwd-load-table-from-file'.
 ;;
+;; This package also sets up a hydra to invoke most of these functions
+;; see `hydra-sb-passwd/body'.
+;;
 ;;;
 
 ;;; Code:
@@ -271,6 +274,21 @@ Calls `sb-passwd-create-password' interactively."
 Calls `sb-passwd-create-password' interactively."
   (interactive)
   (kill-new (call-interactively 'sb-passwd-create-password)))
+
+(defhydra hydra-sb-passwd (nil nil :color pink :exit t :hint nil)
+  "
+^Existing password^     | ^New password
+^---------------------^ | ^---------------------^
+[_p_] Insert at point   | [_P_] Insert at point
+[_k_] Save to kill ring | [_K_] Save to kill ring
+
+[_q_] Quit
+"
+  ("p" sb-passwd-insert-password)
+  ("P" sb-passwd-insert-new-password)
+  ("k" sb-passwd-password-to-kill-ring)
+  ("K" sb-passwd-new-password-to-kill-ring)
+  ("q" nil :color pink))
 
 (provide 'sb-passwd)
 
