@@ -4,7 +4,6 @@
 ;; Copyright (c) 2016-2017 Sébastien Brisard
 
 ;; Author: Sébastien Brisard
-;; Maintainer: Sébastien Brisard
 ;; Created: Dec 2016
 ;; Keywords: convenience
 ;; Homepage:
@@ -28,7 +27,7 @@
 ;;; Commentary:
 ;;
 ;; This library allows to easily retrieve and insert passwords from
-;; the list of credentials `sb-passwd-credentials'. This package is
+;; the list of credentials `sb-passwd-credentials'.  This package is
 ;; *not safe* in the sense that the passwords are stored unencrypted
 ;; in RAM.
 ;;
@@ -199,7 +198,8 @@ In order to avoid issues with number-like passwords,
 `sb-passwd--org-babel-ref-resolve' should be used to parse the
 table from an Org file.
 
-For credentials stored in an Org file, this function should be combined with `sb-passwd-load-table-from-file' as follows
+For credentials stored in an Org file, this function should be
+combined with `sb-passwd-load-table-from-file' as follows
 
     (sb-passwd-append-from-table
      (cdr (delq 'hline (sb-passwd-load-table-from-file \"passwords.gpg\"
@@ -209,7 +209,8 @@ For credentials stored in an Org file, this function should be combined with `sb
 Where the file \"passwords.gpg\" reads
 
 -----begin passwords.gpg-----
-# -*- mode: org; epa-file-encrypt-to: nil; buffer-auto-save-file-name: nil; buffer-read-only: t -*-
+# -*- mode: org; epa-file-encrypt-to: nil;
+# buffer-auto-save-file-name: nil; buffer-read-only: t -*-
 
 #+NAME: passwords
 | Key   | Login  | Password | Comment  |
