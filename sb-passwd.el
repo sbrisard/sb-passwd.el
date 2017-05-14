@@ -275,8 +275,9 @@ Calls `sb-passwd-create-password' interactively."
   (interactive)
   (kill-new (call-interactively 'sb-passwd-create-password)))
 
-(defhydra hydra-sb-passwd (nil nil :color pink :exit t :hint nil)
-  "
+(when (require 'hydra nil t)
+  (defhydra hydra-sb-passwd (nil nil :color pink :exit t :hint nil)
+    "
 ^Existing password^     | ^New password
 ^---------------------^ | ^---------------------^
 [_p_] Insert at point   | [_P_] Insert at point
@@ -288,7 +289,7 @@ Calls `sb-passwd-create-password' interactively."
   ("P" sb-passwd-insert-new-password)
   ("k" sb-passwd-password-to-kill-ring)
   ("K" sb-passwd-new-password-to-kill-ring)
-  ("q" nil :color pink))
+  ("q" nil :color pink)))
 
 (provide 'sb-passwd)
 
