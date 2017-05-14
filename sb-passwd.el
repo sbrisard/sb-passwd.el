@@ -5,8 +5,9 @@
 
 ;; Author: Sébastien Brisard
 ;; Created: Dec 2016
+;; Version: 1.0
 ;; Keywords: convenience
-;; Homepage:
+;; Homepage: https://github.com/sbrisard/sb-passwd.el.git
 
 ;; This file is NOT part of GNU Emacs
 
